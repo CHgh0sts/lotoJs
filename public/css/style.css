@@ -136,13 +136,13 @@ input.JoinGame.selected {
 }
 
 .numberSelect {
-    background-color: #0086005f !important;
-    border-color: #009e00a3 !important;
+    background-color: #867f005f !important;
+    border-color: #9b9e00a3 !important;
 }
 
 .lastNumberSelect {
-    background-color: #00ff005e !important;
-    border-color: #00d500 !important;
+    background-color: #ffea005e !important;
+    border-color: #d5d100 !important;
 }
 
 .selectedFilter {
