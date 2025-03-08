@@ -8,8 +8,9 @@ import LastNumber from '@/components/custom/game/LastNumber';
 import { UsersRound, Link, LogOut, ChartNoAxesColumn } from 'lucide-react';
 import EditUsersInfoDialog from '@/components/custom/game/EditUsersInfoDialog';
 import CreateLinkDialog from '@/components/custom/game/CreateLinkDialog';
+import { toast } from 'sonner';
 export default function Page() {
-  const { setNumbers, listTypeParty, setListTypeParty, setMe, me, setListUsers, setListCartons } = useContext(GlobalContext);
+  const { setNumbers, listTypeParty, setListTypeParty, setMe, me, setListUsers, setListCartons, numbers, listCartons } = useContext(GlobalContext);
   const params = useParams();
   const [gameId, setGameId] = useState(null);
   const [gameSession, setGameSession] = useState(null);
@@ -64,6 +65,28 @@ export default function Page() {
       fetchCartons();
     }
   }, [gameSession]);
+
+  useEffect(() => {
+    listCartons.map(carton => {
+      const cleanedNumbers = carton.listNumber.filter(num => num !== '*').map(num => parseInt(num));
+      const subArrays = [];
+      for (let i = 0; i < cleanedNumbers.length; i += 5) {
+        subArrays.push(cleanedNumbers.slice(i, i + 5));
+      }
+
+      const nbtLigneWin = subArrays.reduce((count, subArray) => {
+        if (subArray.every(num => numbers.includes(num))) {
+          return count + 1;
+        }
+        return count;
+      }, 0);
+      console.log(`nbtLigneWin: ${nbtLigneWin}`);
+      if (nbtLigneWin === typeParty) {
+        console.log(carton);
+        toast.success(`${carton.user.nom} ${carton.user.prenom} a gagné avec le carton ${carton.id}`);
+      }
+    });
+  }, [numbers]);
 
   useEffect(() => {
     socket.on('typePartyUpdated', data => {

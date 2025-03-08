@@ -31,9 +31,7 @@ export async function POST(request) {
             game: true,
             user: true
         }
-    });
-    console.log(carton);
-    
+    });    
     return NextResponse.json({ carton }, { status: 201 });
 }
 

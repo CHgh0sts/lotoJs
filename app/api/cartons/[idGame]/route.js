@@ -20,6 +20,9 @@ export async function GET(request, { params }) {
     const cartons = await prisma.carton.findMany({
       where: {
         gameId: userGame.game.id
+      },
+      include: {
+        user: true
       }
     });
     return NextResponse.json(cartons);
