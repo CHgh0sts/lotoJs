@@ -2,11 +2,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '@/lib/GlobalState';
 import { socket } from '@/lib/socketClient';
-
+import { Info } from 'lucide-react';
+import Carton from './Carton';
 const ListNumberBeforeWin = ({ typeParty }) => {
   const { listUsers, listCartons, numbers } = useContext(GlobalContext);
   const [listNumberBeforeWin, setListNumberBeforeWin] = useState([]);
-
+  const [showInfo, setShowInfo] = useState(false);
   useEffect(() => {
     const uniqueUsers = new Set();
     const updatedList = [];
@@ -68,8 +69,14 @@ const ListNumberBeforeWin = ({ typeParty }) => {
   return (
     <div className="absolute bottom-0 left-0 m-2">
       <ul>
-        {listNumberBeforeWin.map(({ user, minMissingNumbers }, index) => (
-          <li key={index}>
+        {listNumberBeforeWin.map(({ user, minMissingNumbers, bestCarton }, index) => (
+          <li key={index} className="flex items-center gap-2">
+            <Info className="w-4 h-4" onMouseEnter={() => setShowInfo(bestCarton)} onMouseLeave={() => setShowInfo(false)} />
+            {showInfo && showInfo === bestCarton && (
+              <div className="absolute pointer-events-none bg-black">
+                <Carton cartonInitial={showInfo} height="2vh" />
+              </div>
+            )}
             {user.nom} {user.prenom} : {minMissingNumbers}
           </li>
         ))}
