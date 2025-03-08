@@ -70,10 +70,10 @@ const ListNumberBeforeWin = ({ typeParty }) => {
     <div className="absolute bottom-0 left-0 m-2">
       <ul>
         {listNumberBeforeWin.map(({ user, minMissingNumbers, bestCarton }, index) => (
-          <li key={index} className="flex items-center gap-2">
+          <li key={index} className="relative flex items-center gap-2">
             <Info className="w-4 h-4" onMouseEnter={() => setShowInfo(bestCarton)} onMouseLeave={() => setShowInfo(false)} />
             {showInfo && showInfo === bestCarton && (
-              <div className="absolute pointer-events-none bg-black">
+              <div className="absolute pointer-events-none bottom-0 bg-black">
                 <Carton cartonInitial={showInfo} height="2vh" />
               </div>
             )}
