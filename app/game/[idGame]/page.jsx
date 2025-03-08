@@ -9,6 +9,7 @@ import { UsersRound, Link, LogOut, ChartNoAxesColumn } from 'lucide-react';
 import EditUsersInfoDialog from '@/components/custom/game/EditUsersInfoDialog';
 import CreateLinkDialog from '@/components/custom/game/CreateLinkDialog';
 import { toast } from 'sonner';
+import ListNumberBeforeWin from '@/components/custom/game/ListNumberBeforeWin';
 export default function Page() {
   const { setNumbers, listTypeParty, setListTypeParty, setMe, me, setListUsers, setListCartons, numbers, listCartons } = useContext(GlobalContext);
   const params = useParams();
@@ -80,7 +81,6 @@ export default function Page() {
         }
         return count;
       }, 0);
-      console.log(`nbtLigneWin: ${nbtLigneWin}`);
       if (nbtLigneWin === typeParty) {
         console.log(carton);
         toast.success(`${carton.user.nom} ${carton.user.prenom} a gagné avec le carton ${carton.id}`);
@@ -165,6 +165,7 @@ export default function Page() {
           Partie remporté
         </button>
       </div>
+      {window.innerWidth > 768 && <ListNumberBeforeWin typeParty={typeParty} className="absolute top-0 left-0 m-2 bg-green-700 hover:bg-green-800 text-white p-2 rounded-md" />}
       <button onClick={() => setOpenEditUsersInfoDialog(true)} className="listusers absolute bottom-0 right-0 m-2 bg-green-700 hover:bg-green-800 text-white p-2 rounded-md">
         <UsersRound />
       </button>
