@@ -1,0 +1,263 @@
+@import url('https://fonts.googleapis.com/css2?family=Grechen+Fuemen&display=swap');
+
+h1 {
+    font-family: "Grechen Fuemen", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.gridAnim {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200dvh;
+    background-color: black;
+    z-index: -1;
+    background-image:
+        linear-gradient(white 1px, transparent 1px),
+        linear-gradient(90deg, white 1px, transparent 1px);
+    background-size: 40px 40px;
+    transform: translate(-50%, -50%) rotateZ(15deg);
+    opacity: 0.2;
+
+    mask-image: radial-gradient(circle, rgba(255, 255, 255, 0.8) 10%, rgba(255, 255, 255, 0.2) 40%);
+    -webkit-mask-image: radial-gradient(circle, rgba(255, 255, 255, 0.8) 10%, rgba(255, 255, 255, 0.2) 40%);
+
+    animation: pulseGrid 5s infinite alternate ease-in-out;
+}
+
+@keyframes pulseGrid {
+    0% {
+        opacity: 0.2;
+        filter: brightness(1);
+        transform: translate(-50%, -50%) rotateZ(15deg) scale(1);
+    }
+
+    50% {
+        opacity: 0.4;
+        filter: brightness(1.4);
+        transform: translate(-50%, -50%) rotateZ(15deg) scale(.9);
+    }
+
+    100% {
+        opacity: 0.2;
+        filter: brightness(1);
+        transform: translate(-50%, -50%) rotateZ(15deg) scale(1);
+    }
+}
+
+.actionButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.actionButton button,
+.actionButton input {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 5px white;
+    height: 5vh;
+    width: 30vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.actionButton button .arrow {
+    position: relative;
+    overflow: hidden;
+    width: 0;
+    transition: .2s;
+    transition-delay: .1s;
+}
+
+.actionButton button:not(.valid):hover .arrow {
+    transform: rotate(0);
+    width: 3vh;
+}
+
+.actionButton button::after {
+    position: absolute;
+    content: '';
+    transform: translate(0, -50%);
+    z-index: 1;
+    top: 50%;
+    left: 0;
+    width: 0;
+    height: 5vh;
+    background: rgb(245, 245, 220);
+    mix-blend-mode: difference;
+    transition: .2s;
+    border-radius: 1vh;
+}
+
+.actionButton button:hover::after {
+    width: 30vh;
+}
+
+.footer {
+    position: fixed;
+    bottom: 10px;
+    opacity: .5;
+}
+
+.JoinGame:not(.selected) {
+    opacity: 0;
+    width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    transition: .2s;
+    overflow: hidden;
+}
+
+* {
+    white-space: nowrap;
+}
+
+.JoinGame.selected {
+    transition: .2s;
+    opacity: 1;
+    width: 30vh !important;
+}
+
+input.JoinGame.selected {
+    transition: .2s;
+    width: 40vh !important;
+}
+
+.createGame {
+    transition: .2s;
+}
+
+.createGame.valid {
+    width: 12vh !important;
+}
+
+.numberSelect {
+    background-color: #0086005f !important;
+    border-color: #009e00a3 !important;
+}
+
+.lastNumberSelect {
+    background-color: #00ff005e !important;
+    border-color: #00d500 !important;
+}
+
+.selectedFilter {
+    position: relative;
+    width: 3vh;
+    height: 1vh;
+}
+
+.selectedFilter::before {
+    position: absolute;
+    content: '';
+    width: 1vh;
+    height: 1vh;
+    background-color: #ffffff5e;
+    border-radius: 1vh;
+    transition: width .2s;
+}
+
+.selected .selectedFilter::before {
+    position: absolute;
+    content: '';
+    width: 2.5vh;
+    height: .7vh;
+    background-color: #00ff005e;
+    border-radius: 1vh;
+    transform: translate(0, -50%);
+    top: 50%;
+}
+
+.listUsers {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.listUsers li {
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+.selected {
+    background-color: #005e003c;
+}
+
+.listUsers li:hover {
+    background-color: #00ab003c;
+}
+.Carton-cell {
+    position: relative;
+    border: 1px solid #ffffff98;
+}
+.Carton-cell.vide::before {
+    position: absolute;
+    content: '';
+    width: 80%;
+    height: 80%;
+    background-color: #ffffff30;
+    border-top-left-radius: 2vh;
+    border-bottom-right-radius: 2vh;
+}
+
+.isSelected::before {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    content: '';
+    width: 80%;
+    height: 80%;
+    background-color: #00ff005e;
+    border-radius: 5vh;
+}
+
+
+
+/* Carton Style */
+.Carton {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    height: calc(var(--height) * 3);
+    margin: 15px 0;
+}
+
+.Carton-row {
+    position: relative;
+    display: flex;
+    align-items: center;    
+    justify-content: center;
+    width: 100%;
+    height: var(--height);
+}
+
+.Carton-cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: var(--height);
+}
+
+.Carton-cell.vide::before {
+    position: absolute;
+    pointer-events: none;
+    content: '';
+    width: 80%;
+    height: 80%;
+    background-color: #ffffff30;
+    border-top-left-radius: 2vh;
+    border-bottom-right-radius: 2vh;
+}
+.Carton-cell input {
+    outline-color: #00d500;
+}

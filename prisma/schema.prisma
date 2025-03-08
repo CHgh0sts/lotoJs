@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Game {
+  id        Int        @id @default(autoincrement())
+  gameId    String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Party     Party[]
+  User      User[]
+  UserGame  UserGame[]
+  Carton    Carton[]
+}
+
+model Party {
+  id          Int        @id @default(autoincrement())
+  partyId     String
+  listNumber  String[]
+  gameId      Int?
+  Game        Game?      @relation(fields: [gameId], references: [id])
+  typePartyId Int?
+  typeParty   TypeParty? @relation(fields: [typePartyId], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model TypeParty {
+  id        Int      @id @default(autoincrement())
+  name      String
+  Party     Party[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id       Int        @id @default(autoincrement())
+  userId   String
+  nom      String
+  prenom   String
+  username String
+  password String?
+  Game     Game[]
+  UserGame UserGame[]
+  Carton   Carton[]
+}
+
+model UserGame {
+  id         Int      @id @default(autoincrement())
+  userGameId String   @unique
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  game       Game     @relation(fields: [gameId], references: [id])
+  gameId     Int
+  role       Role     @relation(fields: [roleId], references: [id])
+  roleId     Int
+  createdAt  DateTime @default(now())
+}
+
+model Role {
+  id        Int        @id @default(autoincrement())
+  name      String
+  UserGame  UserGame[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Carton {
+  id         Int      @id @default(autoincrement())
+  cartonId   String   @unique
+  listNumber String[]
+  active     Boolean  @default(true)
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  gameId     Int
+  game       Game     @relation(fields: [gameId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
