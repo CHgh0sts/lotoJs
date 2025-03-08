@@ -7,7 +7,7 @@
     "dev:socket": "node server.mjs",
     "build": "npx prisma generate && next build",
     "start": "next start",
-    "start:socket": "node ./dist/server.mjs",
+    "start:socket": "node server.mjs",
     "lint": "next lint"
   },
   "dependencies": {
