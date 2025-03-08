@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="fr" className="dark">
       <body
-        className={`relative flex items-center justify-center h-screen ${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`relative flex items-center justify-center h-[100dvh] ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <GlobalProvider>
           {children}

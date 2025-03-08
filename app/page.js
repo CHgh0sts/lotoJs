@@ -1,8 +1,10 @@
 'use client'
 import { ArrowUpRight } from 'lucide-react';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
   const [isJoinInputVisible, setJoinInputVisible] = useState(false);
   const [joinInputValue, setJoinInputValue] = useState('');
   const handleJoinButtonClick = () => {
@@ -17,9 +19,9 @@ export default function Home() {
   };
   const handleJoinGame = (e) => {
     if (e.target.innerText === 'Rejoindre') {
-      window.location.href = `/game/${joinInputValue}`;
+      router.push(`/game/${joinInputValue}`);
     } else {
-      window.location.href = `/create`;
+      router.push('/create');
     }
   };
   return (
