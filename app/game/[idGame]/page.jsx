@@ -234,48 +234,69 @@ export default function Page() {
 
   return (
     <AuthWrapper>
-      <div className="relative w-full max-w-[50vh] flex flex-col items-center justify-center h-screen">
-        <ListNumber gameSession={gameId} party={party} gameId={gameId} />
-        <div className="relative w-full">
-          <ul className="flex items-center justify-center w-full max-w-[50vh]">
-            {listTypeParty.map(type => (
-              <li onClick={() => handleTypeParty(type.id)} key={type.id} className={`w-[33%] p-2 h-10 flex items-center justify-center cursor-pointer ${type.id === typeParty ? 'bg-green-700' : 'bg-gray-800 hover:bg-gray-700'}`}>
-                {type.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <LastNumber />
-        <div className="flex flex-col items-center mt-4 space-y-3">
-          <button onClick={handleNewParty} className="bg-green-700 hover:bg-green-800 text-white p-2 rounded-md">
-            Partie remportée
-          </button>
-          <div className="flex items-center space-x-2">
-            <input type="checkbox" id="clearTable" checked={clearTableOnNewParty} onChange={e => setClearTableOnNewParty(e.target.checked)} className="custom-checkbox" />
-            <label htmlFor="clearTable" className="text-white text-sm cursor-pointer">
-              Vider le tableau pour la nouvelle partie
-            </label>
+      <div className="min-h-screen w-full p-2 sm:p-4">
+        {/* Header avec boutons de navigation */}
+        <header className="w-full flex justify-between items-center mb-4">
+          <div className="flex gap-2">
+            <button onClick={handleLink} className="bg-green-700 hover:bg-green-800 text-white p-2 rounded-md">
+              <Link className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+            {window?.innerWidth > 768 && <ListNumberBeforeWin typeParty={typeParty} className="bg-green-700 hover:bg-green-800 text-white p-2 rounded-md" />}
           </div>
-        </div>
+
+          <div className="flex gap-2">
+            <button onClick={() => setOpenCartonGroupsManager(true)} className="bg-blue-700 hover:bg-blue-800 text-white p-2 rounded-md">
+              <Layers className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+            <button onClick={handleStats} className="bg-green-700 hover:bg-green-800 text-white p-2 rounded-md">
+              <ChartNoAxesColumn className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+            <button onClick={handleLogout} className="bg-red-700 hover:bg-red-800 text-white p-2 rounded-md">
+              <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+          </div>
+        </header>
+
+        {/* Zone de jeu principale */}
+        <main className="flex flex-col items-center justify-center flex-1 space-y-4">
+          <div className="w-full max-w-[90vw] sm:max-w-[70vw] md:max-w-[50vh] lg:max-w-[60vh]">
+            <ListNumber gameSession={gameId} party={party} gameId={gameId} />
+          </div>
+
+          {/* Sélecteur de type de partie */}
+          <div className="w-full max-w-[90vw] sm:max-w-[70vw] md:max-w-[50vh] lg:max-w-[60vh]">
+            <ul className="flex items-center justify-center w-full border border-white/20 rounded-lg overflow-hidden">
+              {listTypeParty.map(type => (
+                <li onClick={() => handleTypeParty(type.id)} key={type.id} className={`flex-1 p-2 h-10 sm:h-12 flex items-center justify-center cursor-pointer transition-colors text-sm sm:text-base ${type.id === typeParty ? 'bg-green-700 text-white' : 'bg-gray-800 hover:bg-gray-700 text-white/80'}`}>
+                  {type.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <LastNumber />
+
+          {/* Actions de partie */}
+          <div className="flex flex-col items-center space-y-3 w-full max-w-xs">
+            <button onClick={handleNewParty} className="w-full bg-green-700 hover:bg-green-800 text-white p-3 rounded-md font-medium transition-colors">
+              Partie remportée
+            </button>
+            <div className="flex items-center space-x-2">
+              <input type="checkbox" id="clearTable" checked={clearTableOnNewParty} onChange={e => setClearTableOnNewParty(e.target.checked)} className="custom-checkbox" />
+              <label htmlFor="clearTable" className="text-white text-xs sm:text-sm cursor-pointer">
+                Vider le tableau pour la nouvelle partie
+              </label>
+            </div>
+          </div>
+        </main>
+
+        {/* Bouton des utilisateurs en bas à droite */}
+        <button onClick={() => setOpenEditUsersInfoDialog(true)} className="fixed bottom-4 right-4 bg-green-700 hover:bg-green-800 text-white p-3 rounded-full shadow-lg z-10">
+          <UsersRound className="w-5 h-5" />
+        </button>
       </div>
-      {window.innerWidth > 768 && <ListNumberBeforeWin typeParty={typeParty} className="absolute top-0 left-0 m-2 bg-green-700 hover:bg-green-800 text-white p-2 rounded-md" />}
-      <button onClick={() => setOpenEditUsersInfoDialog(true)} className="listusers absolute bottom-0 right-0 m-2 bg-green-700 hover:bg-green-800 text-white p-2 rounded-md">
-        <UsersRound />
-      </button>
-      <button onClick={handleLink} className="listusers absolute top-0 left-0 m-2 bg-green-700 hover:bg-green-800 text-white p-2 rounded-md">
-        <Link />
-      </button>
-      <div className="absolute top-0 right-0 m-2">
-        <button onClick={() => setOpenCartonGroupsManager(true)} className="listusers bg-blue-700 hover:bg-blue-800 text-white p-2 rounded-md">
-          <Layers />
-        </button>
-        <button onClick={handleStats} className="listusers bg-green-700 hover:bg-green-800 text-white p-2 rounded-md m-2">
-          <ChartNoAxesColumn />
-        </button>
-        <button onClick={handleLogout} className="listusers bg-red-700 hover:bg-red-800 text-white p-2 rounded-md">
-          <LogOut />
-        </button>
-      </div>
+
+      {/* Dialogs */}
       <EditUsersInfoDialog isOpen={openEditUsersInfoDialog} onClose={setOpenEditUsersInfoDialog} gameId={gameId} gameSession={gameSession} />
       <CreateLinkDialog isOpen={openCreateLinkDialog} onClose={setOpenCreateLinkDialog} gameId={gameId} />
       <CartonGroupsManager isOpen={openCartonGroupsManager} onClose={() => setOpenCartonGroupsManager(false)} gameId={gameId} />

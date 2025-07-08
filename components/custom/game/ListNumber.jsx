@@ -2,6 +2,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from '@/lib/GlobalState';
 import { socket } from '@/lib/socketClient';
+
 const ListNumber = ({ gameSession, gameId, party }) => {
   const { numbers, setNumbers, me } = useContext(GlobalContext);
 
@@ -40,21 +41,35 @@ const ListNumber = ({ gameSession, gameId, party }) => {
   }, [me]);
 
   return (
-    <div className="relative w-full max-w-[50vh]">
-      {Array.from({ length: 9 }, (_, i) => (
-        <div key={i} className="flex w-full justify-center">
-          {Array.from({ length: 10 }, (_, j) => {
-            const number = i * 10 + j + 1;
-            const isLastNumber = number === numbers[numbers.length - 1];
-            const isInNumbers = numbers.includes(number);
-            return (
-              <span onClick={() => handleNumberClick(number)} key={`${i}-${j}`} className={`w-[10%] aspect-square bg-black text-white flex items-center justify-center hover:bg-gray-500 cursor-pointer border-2 border-[#ffffff33] ${isLastNumber ? 'lastNumberSelect' : isInNumbers ? 'numberSelect' : ''}`} style={{ fontSize: 'clamp(0.75rem, 1.5vh, 1.5vh)' }}>
-                {number}
-              </span>
-            );
-          })}
-        </div>
-      ))}
+    <div className="w-full max-w-full mx-auto bg-black/50 rounded-lg border border-white/20 p-2 sm:p-3 md:p-4">
+      <div className="grid grid-cols-10 gap-px sm:gap-1 w-full">
+        {Array.from({ length: 90 }, (_, index) => {
+          const number = index + 1;
+          const isLastNumber = number === numbers[numbers.length - 1];
+          const isInNumbers = numbers.includes(number);
+
+          return (
+            <button
+              onClick={() => handleNumberClick(number)}
+              key={number}
+              className={`
+                aspect-square w-full
+                flex items-center justify-center 
+                border border-white/20 rounded-sm sm:rounded-md
+                transition-all duration-200 ease-in-out
+                text-white font-medium
+                hover:bg-gray-500 hover:scale-105
+                active:scale-95
+                cursor-pointer
+                text-xs sm:text-sm md:text-base lg:text-lg
+                ${isLastNumber ? 'lastNumberSelect bg-gradient-to-br from-green-500 to-green-600 text-white border-green-400 shadow-lg shadow-green-500/30 scale-110' : isInNumbers ? 'numberSelect bg-gradient-to-br from-yellow-500 to-yellow-600 text-black border-yellow-400 shadow-md shadow-yellow-500/20 scale-105' : 'bg-gray-800 hover:bg-gray-700'}
+              `}
+            >
+              {number}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 };

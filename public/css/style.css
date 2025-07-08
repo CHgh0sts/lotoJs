@@ -1,6 +1,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Grechen+Fuemen&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
+/* Reset et bases responsive */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 12px;
+  }
+}
+
 h1 {
     font-family: "Grechen Fuemen", serif;
     font-weight: 400;
@@ -9,6 +32,7 @@ h1 {
 
 body {
     font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
 }
 
 /* Variables CSS pour la cohérence des couleurs */
@@ -68,13 +92,31 @@ body {
 /* Animations pour les particules flottantes */
 /* Supprimé : animations blob dégueulasses */
 
-/* Amélioration des styles généraux */
+/* Amélioration des styles généraux responsive */
 .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    width: 100%;
+    max-width: 100%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (min-width: 480px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
 }
 
 @media (min-width: 640px) {
+    .container {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+@media (min-width: 768px) {
     .container {
         padding-left: 2rem;
         padding-right: 2rem;
@@ -101,7 +143,6 @@ body {
     z-index: 1000;
     margin-bottom: 0.5rem;
     opacity: 0;
-    /* Supprimé : animation fadeIn dégueulasse */
 }
 
 /* Supprimé : keyframes fadeIn dégueulasse */
@@ -166,7 +207,7 @@ body {
     border-bottom-right-radius: 2vh;
 }
 
-/* Carton Style */
+/* Carton Style responsive */
 .Carton {
     position: relative;
     display: flex;
@@ -174,9 +215,9 @@ body {
     justify-content: center;
     flex-direction: column;
     width: 100%;
-    max-width: 400px;
-    height: calc(var(--height) * 3);
-    margin: 15px auto;
+    max-width: min(95vw, 500px);
+    min-height: 200px;
+    margin: 8px auto;
     background: var(--glass-bg);
     -webkit-backdrop-filter: blur(15px);
     backdrop-filter: blur(15px);
@@ -188,7 +229,7 @@ body {
 }
 
 .Carton:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-strong);
 }
 
@@ -198,7 +239,8 @@ body {
     align-items: center;    
     justify-content: center;
     width: 100%;
-    height: var(--height);
+    min-height: 40px;
+    height: clamp(40px, 8vh, 80px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -212,7 +254,7 @@ body {
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: var(--height);
+    height: 100%;
     border-right: 1px solid rgba(255, 255, 255, 0.1);
     transition: var(--transition);
 }
@@ -225,20 +267,54 @@ body {
     background: rgba(255, 255, 255, 0.05);
 }
 
+.Carton-cell input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    color: white;
+    text-align: center;
+    font-size: clamp(10px, 2.5vw, 18px);
+    font-weight: 600;
+    outline: none;
+}
+
+.Carton-cell input:focus {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive breakpoints pour les cartons */
 @media (max-width: 768px) {
     .Carton {
-        margin: 10px;
-        max-width: calc(100vw - 40px);
-        min-height: 250px;
-        padding: 8px;
+        margin: 4px auto;
+        max-width: calc(100vw - 16px);
+        min-height: 150px;
+        padding: 4px;
     }
     
     .Carton-row {
-        height: 70px;
+        min-height: 35px;
+        height: clamp(35px, 6vh, 60px);
     }
     
     .Carton-cell input {
-        font-size: clamp(12px, 1.8vh, 16px);
+        font-size: clamp(8px, 2vw, 14px);
+    }
+}
+
+@media (max-width: 480px) {
+    .Carton {
+        min-height: 120px;
+        padding: 2px;
+    }
+    
+    .Carton-row {
+        min-height: 30px;
+        height: clamp(30px, 5vh, 50px);
+    }
+    
+    .Carton-cell input {
+        font-size: clamp(6px, 1.5vw, 12px);
     }
 }
 
@@ -363,3 +439,24 @@ body {
 }
 
 /* Supprimé : keyframes pulse dégueulasse */
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+    .hidden-mobile {
+        display: none !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .hidden-desktop {
+        display: none !important;
+    }
+}
+
+/* Touch targets pour mobile */
+@media (max-width: 768px) {
+    button, .cursor-pointer {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
