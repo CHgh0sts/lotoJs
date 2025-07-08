@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "@/public/css/style.css"
 import { GlobalProvider } from "@/lib/GlobalState";
+import { AuthProvider } from "@/lib/AuthContext";
 import { Toaster } from "sonner";
 
 const geistSans = Geist({
@@ -25,10 +26,12 @@ export default function RootLayout({ children }) {
       <body
         className={`relative flex items-center justify-center h-[100dvh] ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <GlobalProvider>
-          {children}
-          <Toaster richColors />
-        </GlobalProvider>
+        <AuthProvider>
+          <GlobalProvider>
+            {children}
+            <Toaster richColors />
+          </GlobalProvider>
+        </AuthProvider>
       </body>
     </html>
   );

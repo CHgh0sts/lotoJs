@@ -51,7 +51,8 @@ model User {
   nom      String
   prenom   String
   username String
-  password String?
+  email    String     @unique
+  password String
   Game     Game[]
   UserGame UserGame[]
   Carton   Carton[]

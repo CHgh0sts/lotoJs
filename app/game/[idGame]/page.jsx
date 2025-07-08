@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import ListNumber from '@/components/custom/game/ListNumber';
 import { GlobalContext } from '@/lib/GlobalState';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { socket } from '@/lib/socketClient';
 import LastNumber from '@/components/custom/game/LastNumber';
 import { UsersRound, Link, LogOut, ChartNoAxesColumn, Layers } from 'lucide-react';
@@ -12,9 +12,14 @@ import CartonGroupsManager from '@/components/custom/game/CartonGroupsManager';
 import StatsDialog from '@/components/custom/game/StatsDialog';
 import { toast } from 'sonner';
 import ListNumberBeforeWin from '@/components/custom/game/ListNumberBeforeWin';
+import { useAuth } from '@/lib/AuthContext';
+import AuthWrapper from '@/components/AuthWrapper';
+
 export default function Page() {
   const { setNumbers, listTypeParty, setListTypeParty, setMe, me, setListUsers, setListCartons, numbers, listCartons } = useContext(GlobalContext);
   const params = useParams();
+  const router = useRouter();
+  const { logout } = useAuth();
   const [gameId, setGameId] = useState(null);
   const [gameSession, setGameSession] = useState(null);
   const [party, setParty] = useState(null);
@@ -219,7 +224,7 @@ export default function Page() {
     setOpenCreateLinkDialog(true);
   };
   const handleLogout = () => {
-    window.location.href = '/';
+    logout();
   };
 
   const handleStats = () => {
@@ -228,7 +233,7 @@ export default function Page() {
   if (!gameId) return <div>Chargement...</div>;
 
   return (
-    <>
+    <AuthWrapper>
       <div className="relative w-full max-w-[50vh] flex flex-col items-center justify-center h-screen">
         <ListNumber gameSession={gameId} party={party} gameId={gameId} />
         <div className="relative w-full">
@@ -275,6 +280,6 @@ export default function Page() {
       <CreateLinkDialog isOpen={openCreateLinkDialog} onClose={setOpenCreateLinkDialog} gameId={gameId} />
       <CartonGroupsManager isOpen={openCartonGroupsManager} onClose={() => setOpenCartonGroupsManager(false)} gameId={gameId} />
       <StatsDialog isOpen={openStatsDialog} onClose={() => setOpenStatsDialog(false)} gameId={gameId} gameSession={gameSession} />
-    </>
+    </AuthWrapper>
   );
 }
