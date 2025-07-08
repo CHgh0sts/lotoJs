@@ -5,9 +5,11 @@ import { GlobalContext } from '@/lib/GlobalState';
 import { useParams } from 'next/navigation';
 import { socket } from '@/lib/socketClient';
 import LastNumber from '@/components/custom/game/LastNumber';
-import { UsersRound, Link, LogOut, ChartNoAxesColumn } from 'lucide-react';
+import { UsersRound, Link, LogOut, ChartNoAxesColumn, Layers } from 'lucide-react';
 import EditUsersInfoDialog from '@/components/custom/game/EditUsersInfoDialog';
 import CreateLinkDialog from '@/components/custom/game/CreateLinkDialog';
+import CartonGroupsManager from '@/components/custom/game/CartonGroupsManager';
+import StatsDialog from '@/components/custom/game/StatsDialog';
 import { toast } from 'sonner';
 import ListNumberBeforeWin from '@/components/custom/game/ListNumberBeforeWin';
 export default function Page() {
@@ -19,6 +21,9 @@ export default function Page() {
   const [typeParty, setTypeParty] = useState(1);
   const [openEditUsersInfoDialog, setOpenEditUsersInfoDialog] = useState(false);
   const [openCreateLinkDialog, setOpenCreateLinkDialog] = useState(false);
+  const [openCartonGroupsManager, setOpenCartonGroupsManager] = useState(false);
+  const [openStatsDialog, setOpenStatsDialog] = useState(false);
+  const [clearTableOnNewParty, setClearTableOnNewParty] = useState(true);
   useEffect(() => {
     async function fetchParams() {
       const resolvedParams = await params;
@@ -26,38 +31,81 @@ export default function Page() {
     }
     fetchParams();
     async function fetchGame() {
-      const response = await fetch(`/api/game/${gameSession}`, {
-        method: 'GET'
-      });
-      const data = await response.json();
-      console.log(data);
-      setParty(data.game.Party[data.game.Party.length - 1].id);
-      setTypeParty(data.game.Party[data.game.Party.length - 1].typePartyId);
-      setGameId(data.game.gameId);
-      setMe(data.user);
-      const listNumber = data.game.Party[data.game.Party.length - 1].listNumber.map(num => parseInt(num));
-      setNumbers(listNumber);
+      try {
+        const response = await fetch(`/api/game/${gameSession}`, {
+          method: 'GET'
+        });
+
+        if (!response.ok) {
+          console.error('Erreur response fetchGame:', response.status);
+          return;
+        }
+
+        const data = await response.json();
+        console.log(data);
+
+        if (data?.game?.Party && data.game.Party.length > 0) {
+          setParty(data.game.Party[data.game.Party.length - 1].id);
+          setTypeParty(data.game.Party[data.game.Party.length - 1].typePartyId);
+          setGameId(data.game.gameId);
+          setMe(data.user);
+          const listNumber = data.game.Party[data.game.Party.length - 1].listNumber.map(num => parseInt(num));
+          setNumbers(listNumber);
+        }
+      } catch (error) {
+        console.error('Erreur fetchGame:', error);
+      }
     }
     async function fetchTypeParty() {
-      const response = await fetch(`/api/typeParty`, {
-        method: 'GET'
-      });
-      const data = await response.json();
-      setListTypeParty(data);
+      try {
+        const response = await fetch(`/api/typeParty`, {
+          method: 'GET'
+        });
+
+        if (!response.ok) {
+          console.error('Erreur response fetchTypeParty:', response.status);
+          return;
+        }
+
+        const data = await response.json();
+        setListTypeParty(data);
+      } catch (error) {
+        console.error('Erreur fetchTypeParty:', error);
+      }
     }
     async function fetchUsers() {
-      const response = await fetch(`/api/users`, {
-        method: 'GET'
-      });
-      const data = await response.json();
-      setListUsers(data);
+      try {
+        const response = await fetch(`/api/users`, {
+          method: 'GET'
+        });
+
+        if (!response.ok) {
+          console.error('Erreur response fetchUsers:', response.status);
+          return;
+        }
+
+        const data = await response.json();
+        setListUsers(data);
+      } catch (error) {
+        console.error('Erreur fetchUsers:', error);
+      }
     }
     async function fetchCartons() {
-      const response = await fetch(`/api/cartons/${gameSession}`, {
-        method: 'GET'
-      });
-      const data = await response.json();
-      setListCartons(data);
+      try {
+        const response = await fetch(`/api/cartons/${gameSession}`, {
+          method: 'GET'
+        });
+
+        if (!response.ok) {
+          console.error('Erreur response fetchCartons:', response.status);
+          return;
+        }
+
+        const data = await response.json();
+        setListCartons(data.activeCartons || data);
+      } catch (error) {
+        console.error('Erreur fetchCartons:', error);
+      }
     }
     if (gameSession) {
       fetchGame();
@@ -110,32 +158,60 @@ export default function Page() {
       typePartyId: id
     });
     async function updateParty() {
-      const response = await fetch(`/api/updateTypeParty`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          partyId: party,
-          typePartyId: id
-        })
-      });
-      const data = await response.json();
-      setTypeParty(data.party.typePartyId);
+      try {
+        const response = await fetch(`/api/updateTypeParty`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            partyId: party,
+            typePartyId: id
+          })
+        });
+
+        if (!response.ok) {
+          console.error('Erreur response updateTypeParty:', response.status);
+          return;
+        }
+
+        const data = await response.json();
+        if (data?.party?.typePartyId) {
+          setTypeParty(data.party.typePartyId);
+        }
+      } catch (error) {
+        console.error('Erreur updateTypeParty:', error);
+      }
     }
     updateParty();
   };
   const handleNewParty = () => {
     async function updateParty() {
-      const response = await fetch(`/api/newParty`, {
-        method: 'POST',
-        body: JSON.stringify({
-          party: party,
-          gameId: gameId
-        })
-      });
-      const data = await response.json();
-      setParty(data.newParty.id);
-      setTypeParty(data.newParty.typePartyId);
-      setNumbers([]);
-      socket.emit('newParty', { party: data.newParty, gameId: gameId });
+      try {
+        const response = await fetch(`/api/newParty`, {
+          method: 'POST',
+          body: JSON.stringify({
+            party: party,
+            gameId: gameId
+          })
+        });
+
+        if (!response.ok) {
+          console.error('Erreur response newParty:', response.status);
+          return;
+        }
+
+        const data = await response.json();
+
+        if (data?.newParty) {
+          setParty(data.newParty.id);
+          setTypeParty(data.newParty.typePartyId);
+
+          // Si clearTableOnNewParty est true, on vide le tableau, sinon on garde les numéros
+          const newNumbers = clearTableOnNewParty ? [] : numbers;
+          setNumbers(newNumbers);
+          socket.emit('newParty', { party: data.newParty, gameId: gameId, numbers: newNumbers });
+        }
+      } catch (error) {
+        console.error('Erreur newParty:', error);
+      }
     }
     updateParty();
   };
@@ -144,6 +220,10 @@ export default function Page() {
   };
   const handleLogout = () => {
     window.location.href = '/';
+  };
+
+  const handleStats = () => {
+    setOpenStatsDialog(true);
   };
   if (!gameId) return <div>Chargement...</div>;
 
@@ -161,9 +241,17 @@ export default function Page() {
           </ul>
         </div>
         <LastNumber />
-        <button onClick={handleNewParty} className="bg-green-700 hover:bg-green-800 mt-4 text-white p-2 rounded-md">
-          Partie remporté
-        </button>
+        <div className="flex flex-col items-center mt-4 space-y-3">
+          <button onClick={handleNewParty} className="bg-green-700 hover:bg-green-800 text-white p-2 rounded-md">
+            Partie remportée
+          </button>
+          <div className="flex items-center space-x-2">
+            <input type="checkbox" id="clearTable" checked={clearTableOnNewParty} onChange={e => setClearTableOnNewParty(e.target.checked)} className="custom-checkbox" />
+            <label htmlFor="clearTable" className="text-white text-sm cursor-pointer">
+              Vider le tableau pour la nouvelle partie
+            </label>
+          </div>
+        </div>
       </div>
       {window.innerWidth > 768 && <ListNumberBeforeWin typeParty={typeParty} className="absolute top-0 left-0 m-2 bg-green-700 hover:bg-green-800 text-white p-2 rounded-md" />}
       <button onClick={() => setOpenEditUsersInfoDialog(true)} className="listusers absolute bottom-0 right-0 m-2 bg-green-700 hover:bg-green-800 text-white p-2 rounded-md">
@@ -173,15 +261,20 @@ export default function Page() {
         <Link />
       </button>
       <div className="absolute top-0 right-0 m-2">
-        <button onClick={handleLogout} className="listusers bg-green-700 hover:bg-green-800 text-white p-2 rounded-md m-2">
+        <button onClick={() => setOpenCartonGroupsManager(true)} className="listusers bg-blue-700 hover:bg-blue-800 text-white p-2 rounded-md m-2">
+          <Layers />
+        </button>
+        <button onClick={handleStats} className="listusers bg-green-700 hover:bg-green-800 text-white p-2 rounded-md m-2">
           <ChartNoAxesColumn />
         </button>
         <button onClick={handleLogout} className="listusers bg-red-700 hover:bg-red-800 text-white p-2 rounded-md">
           <LogOut />
         </button>
       </div>
-      <EditUsersInfoDialog isOpen={openEditUsersInfoDialog} onClose={setOpenEditUsersInfoDialog} gameId={gameId} />
+      <EditUsersInfoDialog isOpen={openEditUsersInfoDialog} onClose={setOpenEditUsersInfoDialog} gameId={gameId} gameSession={gameSession} />
       <CreateLinkDialog isOpen={openCreateLinkDialog} onClose={setOpenCreateLinkDialog} gameId={gameId} />
+      <CartonGroupsManager isOpen={openCartonGroupsManager} onClose={() => setOpenCartonGroupsManager(false)} gameId={gameId} />
+      <StatsDialog isOpen={openStatsDialog} onClose={() => setOpenStatsDialog(false)} gameId={gameId} gameSession={gameSession} />
     </>
   );
 }

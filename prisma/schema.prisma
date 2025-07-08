@@ -14,14 +14,15 @@ datasource db {
 }
 
 model Game {
-  id        Int        @id @default(autoincrement())
-  gameId    String     @unique
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  Party     Party[]
-  User      User[]
-  UserGame  UserGame[]
-  Carton    Carton[]
+  id          Int           @id @default(autoincrement())
+  gameId      String        @unique
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Party       Party[]
+  User        User[]
+  UserGame    UserGame[]
+  Carton      Carton[]
+  CartonGroup CartonGroup[]
 }
 
 model Party {
@@ -77,14 +78,27 @@ model Role {
 }
 
 model Carton {
-  id         Int      @id @default(autoincrement())
-  cartonId   String   @unique
+  id         Int          @id @default(autoincrement())
+  cartonId   String       @unique
   listNumber String[]
-  active     Boolean  @default(true)
+  active     Boolean      @default(true)
   userId     Int
-  user       User     @relation(fields: [userId], references: [id])
+  user       User         @relation(fields: [userId], references: [id])
   gameId     Int
-  game       Game     @relation(fields: [gameId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  game       Game         @relation(fields: [gameId], references: [id])
+  groupId    Int?
+  group      CartonGroup? @relation(fields: [groupId], references: [id])
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+model CartonGroup {
+  id        Int      @id @default(autoincrement())
+  name      String
+  active    Boolean  @default(true)
+  gameId    Int
+  game      Game     @relation(fields: [gameId], references: [id])
+  cartons   Carton[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

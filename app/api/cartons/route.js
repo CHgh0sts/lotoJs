@@ -9,8 +9,8 @@ const generateNumber = (longueur) => {
 };
 
 export async function POST(request) {
-    const { ListNumber, userId, gameId } = await request.json();
-    console.log(ListNumber, userId, gameId);
+    const { ListNumber, userId, gameId, groupId } = await request.json();
+    console.log(ListNumber, userId, gameId, groupId);
     const cartonId = generateNumber(10);
     const game = await prisma.game.findFirst({
         where: {
@@ -25,11 +25,13 @@ export async function POST(request) {
             listNumber: ListNumber,
             userId: userId,
             cartonId: cartonId,
-            gameId: game.id
+            gameId: game.id,
+            groupId: groupId || null
         },
         include: {
             game: true,
-            user: true
+            user: true,
+            group: true
         }
     });    
     return NextResponse.json({ carton }, { status: 201 });

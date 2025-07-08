@@ -17,15 +17,30 @@ export async function GET(request, { params }) {
     if (!userGame) {
       return NextResponse.json({ error: 'User game not found' }, { status: 404 });
     }
-    const cartons = await prisma.carton.findMany({
+    
+    // Récupérer tous les cartons avec leurs groupes
+    const allCartons = await prisma.carton.findMany({
       where: {
         gameId: userGame.game.id
       },
       include: {
-        user: true
+        user: true,
+        group: true
       }
     });
-    return NextResponse.json(cartons);
+    
+    // Filtrer les cartons selon le statut actif des groupes
+    const activeCartons = allCartons.filter(carton => {
+      // Si le carton n'a pas de groupe, il est toujours actif
+      if (!carton.group) return true;
+      // Si le carton a un groupe, vérifier que le groupe est actif
+      return carton.group.active;
+    });
+    
+    return NextResponse.json({
+      allCartons: allCartons,
+      activeCartons: activeCartons
+    });
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error: error.message }, { status: 500 });
