@@ -17,7 +17,8 @@ export async function GET() {
             nom: true,
             prenom: true,
             username: true,
-            email: true
+            email: true,
+            isTemporary: true
             // Ne pas inclure le password dans les réponses
         }
     });
@@ -101,7 +102,8 @@ export async function POST(request) {
                 prenom,
                 email: tempEmail,
                 password: tempPassword,
-                username: `${nom.toLowerCase()} ${prenom.toLowerCase()}`
+                username: `${nom.toLowerCase()} ${prenom.toLowerCase()}`,
+                isTemporary: true
             }
         });
 

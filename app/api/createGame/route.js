@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 export async function GET() {
   try {
     // Vérifier la session utilisateur
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const sessionCookie = cookieStore.get('auth-session');
 
     if (!sessionCookie) {

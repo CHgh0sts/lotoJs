@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
 import { toast } from 'sonner';
+import { notifyAccountMerge } from '@/lib/mergeNotification';
 
 export default function Login() {
   const router = useRouter();
@@ -48,7 +49,21 @@ export default function Login() {
       } else {
         const result = await login(formData.email, formData.password);
         if (result.success) {
-          toast.success('Connexion réussie !');
+          // Afficher un message de fusion si des comptes ont été fusionnés
+          if (result.mergedAccounts) {
+            toast.success(`Connexion réussie ! ${result.mergedAccounts.count} compte(s) temporaire(s) fusionné(s).`);
+
+            // Notifier toutes les parties concernées par les fusions (après un court délai)
+            setTimeout(() => {
+              // Note: On pourrait récupérer les oldUserIds du backend si nécessaire
+              // Pour l'instant on notifie juste que des comptes ont été fusionnés
+              result.mergedAccounts.gameIds.forEach(gameId => {
+                notifyAccountMerge([gameId], [], result.user?.id);
+              });
+            }, 1000);
+          } else {
+            toast.success('Connexion réussie !');
+          }
           router.push('/');
         } else {
           toast.error(result.error);

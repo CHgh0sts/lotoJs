@@ -80,7 +80,7 @@ export default function Page() {
     }
     async function fetchUsers() {
       try {
-        const response = await fetch(`/api/users`, {
+        const response = await fetch(`/api/game/${gameSession}/users`, {
           method: 'GET'
         });
 
@@ -266,7 +266,7 @@ export default function Page() {
         <Link />
       </button>
       <div className="absolute top-0 right-0 m-2">
-        <button onClick={() => setOpenCartonGroupsManager(true)} className="listusers bg-blue-700 hover:bg-blue-800 text-white p-2 rounded-md m-2">
+        <button onClick={() => setOpenCartonGroupsManager(true)} className="listusers bg-blue-700 hover:bg-blue-800 text-white p-2 rounded-md">
           <Layers />
         </button>
         <button onClick={handleStats} className="listusers bg-green-700 hover:bg-green-800 text-white p-2 rounded-md m-2">

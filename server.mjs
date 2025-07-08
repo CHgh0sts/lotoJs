@@ -50,6 +50,11 @@ app.prepare().then(() => {
             socket.to(gameId).emit('listCartonsUpdated', { listCartons: listCartons });
         })
 
+        socket.on('userAccountMerged', ({ gameId, oldUserId, newUserId }) => {
+            socket.join(gameId);
+            socket.to(gameId).emit('accountMerged', { oldUserId, newUserId });
+        })
+
 
 
 

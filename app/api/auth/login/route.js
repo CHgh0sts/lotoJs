@@ -44,6 +44,47 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Mot de passe incorrect' }, { status: 401 });
     }
 
+    // Chercher des utilisateurs temporaires avec le même nom/prénom pour fusion
+    const temporaryUsers = await prisma.user.findMany({
+      where: {
+        nom: { equals: user.nom, mode: 'insensitive' },
+        prenom: { equals: user.prenom, mode: 'insensitive' },
+        isTemporary: true,
+        id: { not: user.id }
+      },
+      include: {
+        Carton: true,
+        UserGame: true
+      }
+    });
+
+    // Fusionner les comptes temporaires avec le compte réel
+    const mergedGameIds = [];
+    for (const tempUser of temporaryUsers) {
+      // Récupérer les gameIds affectés pour notifications
+      const gameIds = tempUser.UserGame.map(ug => ug.gameId);
+      mergedGameIds.push(...gameIds);
+
+      // Transférer les cartons
+      await prisma.carton.updateMany({
+        where: { userId: tempUser.id },
+        data: { userId: user.id }
+      });
+
+      // Transférer les UserGame (liens vers les parties)
+      await prisma.userGame.updateMany({
+        where: { userId: tempUser.id },
+        data: { userId: user.id }
+      });
+
+      // Supprimer l'utilisateur temporaire
+      await prisma.user.delete({
+        where: { id: tempUser.id }
+      });
+
+      console.log(`Fusion du compte temporaire ${tempUser.nom} ${tempUser.prenom} avec le compte réel`);
+    }
+
     // Créer une session (simple avec cookie)
     const sessionData = {
       userId: user.id,
@@ -54,7 +95,11 @@ export async function POST(request) {
 
     const response = NextResponse.json({ 
       message: 'Connexion réussie',
-      user: sessionData
+      user: sessionData,
+      mergedAccounts: temporaryUsers.length > 0 ? {
+        count: temporaryUsers.length,
+        gameIds: [...new Set(mergedGameIds)]
+      } : null
     });
 
     // Définir le cookie de session

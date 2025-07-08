@@ -24,6 +24,58 @@ export default function EditUsersInfoDialog({ isOpen, onClose, gameId = '', game
   const [isEditMode, setIsEditMode] = useState(false);
   const [showUsersList, setShowUsersList] = useState(true);
 
+  // Écouter les événements socket pour la mise à jour des utilisateurs
+  useEffect(() => {
+    socket.on('userJoined', user => {
+      console.log(`Utilisateur rejoint: ${user.prenom} ${user.nom}`);
+      // Recharger la liste des utilisateurs de la partie
+      refreshUsers();
+    });
+
+    socket.on('listUsersUpdated', data => {
+      setListUsers(data.listUsers);
+    });
+
+    socket.on('accountMerged', ({ oldUserId, newUserId }) => {
+      console.log(`Compte fusionné: ${oldUserId} → ${newUserId}`);
+      // Recharger la liste des utilisateurs et cartons
+      refreshUsers();
+      refreshCartons();
+      toast({
+        title: 'Compte fusionné',
+        description: 'Un utilisateur temporaire a été fusionné avec un compte réel.'
+      });
+    });
+
+    return () => {
+      socket.off('userJoined');
+      socket.off('listUsersUpdated');
+      socket.off('accountMerged');
+    };
+  }, [gameSession]);
+
+  // Charger la liste initiale des utilisateurs de la partie
+  useEffect(() => {
+    if (isOpen && gameSession) {
+      refreshUsers();
+    }
+  }, [isOpen, gameSession]);
+
+  // Fonction pour recharger les utilisateurs de la partie
+  const refreshUsers = async () => {
+    try {
+      const response = await fetch(`/api/game/${gameSession}/users`, {
+        method: 'GET'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setListUsers(data);
+      }
+    } catch (error) {
+      console.error('Erreur lors du rechargement des utilisateurs:', error);
+    }
+  };
+
   const handleDeleteUser = async userId => {
     const response = await fetch('/api/users', {
       method: 'DELETE',
@@ -120,9 +172,10 @@ export default function EditUsersInfoDialog({ isOpen, onClose, gameId = '', game
                   {listUsers.map(user => (
                     <li onClick={() => setSelectedFilter(user.id)} key={user.id} className={`cursor-pointer rounded-md mb-1 transition-colors ${selectedFilter == user.id ? 'bg-green-700 text-white' : 'hover:bg-gray-700'}`}>
                       <p className="flex items-center px-3 py-2">
-                        <span className="w-2 h-2 rounded-full bg-blue-500 mr-2"></span>
+                        <span className={`w-2 h-2 rounded-full mr-2 ${user.isTemporary ? 'bg-red-500' : 'bg-blue-500'}`}></span>
                         <span className="truncate">
                           {user.nom} {user.prenom}
+                          {user.isTemporary && <span className="text-xs text-gray-400 ml-1">(temp)</span>}
                         </span>
                       </p>
                     </li>
@@ -213,9 +266,10 @@ export default function EditUsersInfoDialog({ isOpen, onClose, gameId = '', game
                         className={`w-full p-3 rounded-lg border-2 transition-colors ${selectedFilter == user.id ? 'border-green-500 bg-green-700 text-white' : 'border-gray-600 bg-gray-700 hover:bg-gray-600'}`}
                       >
                         <div className="flex items-center">
-                          <span className="w-3 h-3 rounded-full bg-blue-500 mr-3"></span>
+                          <span className={`w-3 h-3 rounded-full mr-3 ${user.isTemporary ? 'bg-red-500' : 'bg-blue-500'}`}></span>
                           <span className="font-medium">
                             {user.nom} {user.prenom}
+                            {user.isTemporary && <span className="text-xs text-gray-400 ml-1">(temp)</span>}
                           </span>
                         </div>
                       </button>
@@ -295,15 +349,20 @@ export default function EditUsersInfoDialog({ isOpen, onClose, gameId = '', game
       <CreateUserDialog isOpen={openCreateUserDialog} onClose={() => setOpenCreateUserDialog(false)} gameId={gameId} />
       {confirmDeleteDialog && (
         <Dialog open={confirmDeleteDialog} onOpenChange={setConfirmDeleteDialog}>
-          <DialogContent className="max-w-md w-[90vw] p-6">
-            <DialogTitle className="text-lg font-semibold mb-4">Confirmer la suppression</DialogTitle>
-            <p className="text-gray-400 mb-6">Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.</p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
-              <button onClick={() => setConfirmDeleteDialog(false)} className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition-colors order-2 sm:order-1">
+          <DialogContent className="bg-gray-800 border-gray-600 max-w-sm p-0 flex flex-col">
+            <div className="p-4 text-center flex-1">
+              <Trash className="w-8 h-8 text-red-500 mx-auto mb-2" />
+              <DialogTitle className="text-lg font-semibold text-white mb-2">Supprimer utilisateur</DialogTitle>
+              <p className="text-gray-300 text-sm">Voulez-vous vraiment supprimer cet utilisateur ?</p>
+              <p className="text-red-400 text-xs mt-1">Cette action est irréversible</p>
+            </div>
+
+            <div className="bg-gray-700 p-3 flex gap-2">
+              <button onClick={() => setConfirmDeleteDialog(false)} className="flex-1 h-8 bg-gray-600 hover:bg-gray-500 text-white text-xs rounded transition-colors leading-none">
                 Annuler
               </button>
-              <button onClick={handleConfirmDelete} className="bg-red-700 hover:bg-red-800 text-white px-4 py-2 rounded-md transition-colors order-1 sm:order-2">
-                Confirmer la suppression
+              <button onClick={handleConfirmDelete} className="flex-1 h-8 bg-red-600 hover:bg-red-500 text-white text-xs rounded transition-colors leading-none">
+                Supprimer
               </button>
             </div>
           </DialogContent>

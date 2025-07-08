@@ -23,7 +23,8 @@ export default function CreateUserDialog({ isOpen, onClose, gameId }) {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/users', {
+      // D'abord créer l'utilisateur
+      const userResponse = await fetch('/api/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -31,12 +32,31 @@ export default function CreateUserDialog({ isOpen, onClose, gameId }) {
         body: JSON.stringify(formData)
       });
 
-      if (response.ok) {
-        const newUser = await response.json();
-        toast.success('Utilisateur créé avec succès');
-        setListUsers([...listUsers, newUser]);
-        socket.emit('updateListUsers', { listUsers: [...listUsers, newUser], gameId: gameId });
-        onClose();
+      if (userResponse.ok) {
+        const newUser = await userResponse.json();
+
+        // Ensuite l'associer à la partie via CreateLink
+        const linkResponse = await fetch('/api/game/createLink', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId: newUser.id,
+            roleId: 3, // Role "View" par défaut
+            gameId: gameId
+          })
+        });
+
+        if (linkResponse.ok) {
+          toast.success('Utilisateur créé et ajouté à la partie avec succès');
+          const updatedUsers = [...listUsers, newUser];
+          setListUsers(updatedUsers);
+          socket.emit('updateListUsers', { listUsers: updatedUsers, gameId: gameId });
+          onClose();
+        } else {
+          toast.error("Erreur lors de l'ajout de l'utilisateur à la partie");
+        }
       } else {
         toast.error("Erreur lors de la création de l'utilisateur");
       }
