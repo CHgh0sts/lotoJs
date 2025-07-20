@@ -60,11 +60,11 @@ const ListNumber = ({ gameSession, gameId, party }) => {
                 rounded-md
                 transition-all duration-200 ease-in-out
                 text-white font-medium
-                hover:bg-gray-500 hover:scale-105
-                active:scale-95
+                hover:bg-gray-500 hover:scale-102
+                active:scale-70
                 cursor-pointer
                 text-sm
-                ${isLastNumber ? 'lastNumberSelect bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg shadow-green-500/30 scale-110' : isInNumbers ? 'numberSelect bg-gradient-to-br from-yellow-500 to-yellow-600 text-black shadow-md shadow-yellow-500/20 scale-105' : 'bg-gray-800 hover:bg-gray-700'}
+                ${isLastNumber ? 'lastNumberSelect bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg shadow-green-500/30 scale-107' : isInNumbers ? 'numberSelect bg-gradient-to-br from-yellow-500 to-yellow-600 text-black shadow-md shadow-yellow-500/20 scale-102' : 'bg-gray-800 hover:bg-gray-700'}
               `}
             >
               {number}

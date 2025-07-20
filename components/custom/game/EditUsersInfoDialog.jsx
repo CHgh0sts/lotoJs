@@ -220,7 +220,7 @@ export default function EditUsersInfoDialog({ isOpen, onClose, gameId = '', game
                     <p className="text-center">{selectedFilter === 'all' ? 'Aucun carton disponible' : 'Aucun carton pour cet utilisateur'}</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     {listCartons
                       .filter(carton => (selectedFilter == 'all' ? true : carton.userId == selectedFilter))
                       .map(carton => (
