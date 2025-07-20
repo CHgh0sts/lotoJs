@@ -52,6 +52,10 @@ export default function Home() {
           body: JSON.stringify({ gameId: joinInputValue.trim() })
         });
 
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP: ${response.status}`);
+        }
+
         const data = await response.json();
 
         if (data.exists) {
@@ -76,6 +80,11 @@ export default function Home() {
           'Content-Type': 'application/json'
         }
         });
+
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP: ${response.status}`);
+        }
+
         const data = await response.json();
         router.push(`/game/${data.gameId}`);
       } catch (error) {

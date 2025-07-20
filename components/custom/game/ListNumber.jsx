@@ -41,8 +41,8 @@ const ListNumber = ({ gameSession, gameId, party }) => {
   }, [me]);
 
   return (
-    <div className="w-full max-w-full mx-auto bg-black/50 rounded-lg border border-white/20 p-2 sm:p-3 md:p-4">
-      <div className="grid grid-cols-10 gap-px sm:gap-1 w-full">
+    <div className="w-fit max-w-full mx-auto bg-black/50 rounded-lg border border-white/20 p-2">
+      <div className="grid grid-cols-10 gap-0 w-full max-w-4xl mx-auto">
         {Array.from({ length: 90 }, (_, index) => {
           const number = index + 1;
           const isLastNumber = number === numbers[numbers.length - 1];
@@ -53,16 +53,16 @@ const ListNumber = ({ gameSession, gameId, party }) => {
               onClick={() => handleNumberClick(number)}
               key={number}
               className={`
-                aspect-square w-full
+                aspect-square w-12 max-w-12 max-h-12
                 flex items-center justify-center 
-                border border-white/20 rounded-sm sm:rounded-md
+                border-0
                 transition-all duration-200 ease-in-out
                 text-white font-medium
                 hover:bg-gray-500 hover:scale-105
                 active:scale-95
                 cursor-pointer
-                text-xs sm:text-sm md:text-base lg:text-lg
-                ${isLastNumber ? 'lastNumberSelect bg-gradient-to-br from-green-500 to-green-600 text-white border-green-400 shadow-lg shadow-green-500/30 scale-110' : isInNumbers ? 'numberSelect bg-gradient-to-br from-yellow-500 to-yellow-600 text-black border-yellow-400 shadow-md shadow-yellow-500/20 scale-105' : 'bg-gray-800 hover:bg-gray-700'}
+                text-sm
+                ${isLastNumber ? 'lastNumberSelect bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg shadow-green-500/30 scale-110' : isInNumbers ? 'numberSelect bg-gradient-to-br from-yellow-500 to-yellow-600 text-black shadow-md shadow-yellow-500/20 scale-105' : 'bg-gray-800 hover:bg-gray-700'}
               `}
             >
               {number}

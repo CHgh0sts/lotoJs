@@ -22,7 +22,7 @@ export default function CreateCartonDialog({ isOpen, onClose, params = { userId:
 
   // Fonction pour vider complètement le dialog à la fermeture
   const handleClose = () => {
-    setValidationState({ isValid: false, errors: [], totalNumbers: 0 });
+    setCartonStatus({ isValid: false, errors: [], totalNumbers: 0 });
     setCartonData({ listNumber: Array(27).fill('*') });
     setSelectedGroup('none');
     setDetectedNumbers([]);

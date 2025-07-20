@@ -84,7 +84,7 @@ h1 {
 }
 
 .lastNumberSelect {
-    background: linear-gradient(135deg, var(--primary-green), var(--primary-green-dark)) !important;
+
     border: 2px solid var(--primary-green) !important;
     color: white !important;
     font-weight: 700 !important;

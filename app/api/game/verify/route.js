@@ -12,9 +12,9 @@ export async function POST(request) {
     }
 
     // Vérifier si la game existe dans la base de données
-    const game = await prisma.game.findUnique({
+    const game = await prisma.game.findFirst({
       where: {
-        id: gameId
+        gameId: gameId
       }
     });
 
