@@ -29,6 +29,20 @@ export default function Page() {
   const [openCartonGroupsManager, setOpenCartonGroupsManager] = useState(false);
   const [openStatsDialog, setOpenStatsDialog] = useState(false);
   const [clearTableOnNewParty, setClearTableOnNewParty] = useState(true);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  // Détecter la taille d'écran côté client pour éviter l'erreur d'hydratation
+  useEffect(() => {
+    const checkIsDesktop = () => {
+      setIsDesktop(window.innerWidth > 768);
+    };
+
+    checkIsDesktop();
+    window.addEventListener('resize', checkIsDesktop);
+
+    return () => window.removeEventListener('resize', checkIsDesktop);
+  }, []);
+
   useEffect(() => {
     async function fetchParams() {
       const resolvedParams = await params;
@@ -234,14 +248,14 @@ export default function Page() {
 
   return (
     <AuthWrapper>
-      <div className="min-h-screen w-full p-2 sm:p-4">
+      <div className="h-screen w-full flex flex-col bg-gray-900" style={{ overflow: 'hidden' }}>
         {/* Header avec boutons de navigation */}
-        <header className="w-full flex justify-between items-center mb-4">
+        <header className="flex-shrink-0 w-full flex justify-between items-center p-3 bg-gray-800 border-b border-gray-700">
           <div className="flex gap-2">
             <button onClick={handleLink} className="bg-green-700 hover:bg-green-800 text-white p-2 rounded-md">
               <Link className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
-            {window?.innerWidth > 768 && <ListNumberBeforeWin typeParty={typeParty} className="bg-green-700 hover:bg-green-800 text-white p-2 rounded-md" />}
+            {isDesktop && <ListNumberBeforeWin typeParty={typeParty} className="bg-green-700 hover:bg-green-800 text-white p-2 rounded-md" />}
           </div>
 
           <div className="flex gap-2">
@@ -257,43 +271,98 @@ export default function Page() {
           </div>
         </header>
 
-        {/* Zone de jeu principale */}
-        <main className="flex flex-col items-center justify-center flex-1 space-y-4">
-          <div className="w-full max-w-[90vw] sm:max-w-[70vw] md:max-w-[50vh] lg:max-w-[60vh]">
-            <ListNumber gameSession={gameId} party={party} gameId={gameId} />
-          </div>
-
-          {/* Sélecteur de type de partie */}
-          <div className="w-full max-w-[90vw] sm:max-w-[70vw] md:max-w-[50vh] lg:max-w-[60vh]">
-            <ul className="flex items-center justify-center w-full border border-white/20 rounded-lg overflow-hidden">
-              {listTypeParty.map(type => (
-                <li onClick={() => handleTypeParty(type.id)} key={type.id} className={`flex-1 p-2 h-10 sm:h-12 flex items-center justify-center cursor-pointer transition-colors text-sm sm:text-base ${type.id === typeParty ? 'bg-green-700 text-white' : 'bg-gray-800 hover:bg-gray-700 text-white/80'}`}>
-                  {type.name}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <LastNumber />
-
-          {/* Actions de partie */}
-          <div className="flex flex-col items-center space-y-3 w-full max-w-xs">
-            <button onClick={handleNewParty} className="w-full bg-green-700 hover:bg-green-800 text-white p-3 rounded-md font-medium transition-colors">
-              Partie remportée
-            </button>
-            <div className="flex items-center space-x-2">
-              <input type="checkbox" id="clearTable" checked={clearTableOnNewParty} onChange={e => setClearTableOnNewParty(e.target.checked)} className="custom-checkbox" />
-              <label htmlFor="clearTable" className="text-white text-xs sm:text-sm cursor-pointer">
-                Vider le tableau pour la nouvelle partie
-              </label>
+        {/* Zone de jeu principale - Design différent PC vs Mobile */}
+        {isDesktop ? (
+          /* Layout PC - Disposition horizontale optimisée */
+          <main className="flex-1 flex h-full overflow-hidden">
+            {/* Section gauche - Grille des numéros */}
+            <div className="flex-1 flex items-center justify-center p-6">
+              <div className="w-full max-w-4xl">
+                <ListNumber gameSession={gameId} party={party} gameId={gameId} />
+              </div>
             </div>
-          </div>
-        </main>
 
-        {/* Bouton des utilisateurs en bas à droite */}
-        <button onClick={() => setOpenEditUsersInfoDialog(true)} className="fixed bottom-4 right-4 bg-green-700 hover:bg-green-800 text-white p-3 rounded-full shadow-lg z-10">
-          <UsersRound className="w-5 h-5" />
-        </button>
+            {/* Section droite - Contrôles et infos */}
+            <div className="w-80 flex-shrink-0 bg-gray-800 border-l border-gray-700 p-6 flex flex-col space-y-6">
+              {/* Dernier numéro */}
+              <div className="flex-shrink-0">
+                <LastNumber />
+              </div>
+
+              {/* Sélecteur de type de partie */}
+              <div className="flex-shrink-0">
+                <h3 className="text-white text-lg font-semibold mb-3">Type de partie</h3>
+                <div className="space-y-2">
+                  {listTypeParty.map(type => (
+                    <button key={type.id} onClick={() => handleTypeParty(type.id)} className={`w-full p-3 rounded-lg transition-colors text-left ${type.id === typeParty ? 'bg-green-700 text-white' : 'bg-gray-700 hover:bg-gray-600 text-white/80'}`}>
+                      {type.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Actions de partie */}
+              <div className="flex-shrink-0 space-y-4">
+                <button onClick={handleNewParty} className="w-full bg-green-700 hover:bg-green-800 text-white p-3 rounded-lg font-medium transition-colors">
+                  Partie remportée
+                </button>
+
+                <div className="flex items-center space-x-3">
+                  <input type="checkbox" id="clearTable" checked={clearTableOnNewParty} onChange={e => setClearTableOnNewParty(e.target.checked)} className="custom-checkbox" />
+                  <label htmlFor="clearTable" className="text-white text-sm cursor-pointer">
+                    Vider le tableau pour la nouvelle partie
+                  </label>
+                </div>
+              </div>
+
+              {/* Bouton des utilisateurs */}
+              <div className="flex-shrink-0 mt-auto">
+                <button onClick={() => setOpenEditUsersInfoDialog(true)} className="w-full bg-green-700 hover:bg-green-800 text-white p-3 rounded-lg flex items-center justify-center space-x-2">
+                  <UsersRound className="w-5 h-5" />
+                  <span>Gérer les utilisateurs</span>
+                </button>
+              </div>
+            </div>
+          </main>
+        ) : (
+          /* Layout Mobile - Disposition verticale */
+          <main className="flex-1 flex flex-col items-center justify-center p-2 space-y-3 sm:space-y-4" style={{ overflow: 'hidden' }}>
+            <div className="w-full max-w-[95vw] sm:max-w-[85vw] md:max-w-[70vw] lg:max-w-[60vw]">
+              <ListNumber gameSession={gameId} party={party} gameId={gameId} />
+            </div>
+
+            {/* Sélecteur de type de partie */}
+            <div className="w-full max-w-[95vw] sm:max-w-[85vw] md:max-w-[70vw] lg:max-w-[60vw]">
+              <ul className="flex items-center justify-center w-full border border-white/20 rounded-lg overflow-hidden">
+                {listTypeParty.map(type => (
+                  <li onClick={() => handleTypeParty(type.id)} key={type.id} className={`flex-1 p-2 h-10 sm:h-12 flex items-center justify-center cursor-pointer transition-colors text-sm sm:text-base ${type.id === typeParty ? 'bg-green-700 text-white' : 'bg-gray-800 hover:bg-gray-700 text-white/80'}`}>
+                    {type.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <LastNumber />
+
+            {/* Actions de partie */}
+            <div className="flex flex-col items-center space-y-2 w-full max-w-xs">
+              <button onClick={handleNewParty} className="w-full bg-green-700 hover:bg-green-800 text-white p-2 sm:p-3 rounded-md font-medium transition-colors text-sm sm:text-base">
+                Partie remportée
+              </button>
+              <div className="flex items-center space-x-2">
+                <input type="checkbox" id="clearTable" checked={clearTableOnNewParty} onChange={e => setClearTableOnNewParty(e.target.checked)} className="custom-checkbox" />
+                <label htmlFor="clearTable" className="text-white text-xs cursor-pointer">
+                  Vider le tableau pour la nouvelle partie
+                </label>
+              </div>
+            </div>
+
+            {/* Bouton des utilisateurs en bas à droite */}
+            <button onClick={() => setOpenEditUsersInfoDialog(true)} className="fixed bottom-4 right-4 bg-green-700 hover:bg-green-800 text-white p-3 rounded-full shadow-lg z-10">
+              <UsersRound className="w-5 h-5" />
+            </button>
+          </main>
+        )}
       </div>
 
       {/* Dialogs */}

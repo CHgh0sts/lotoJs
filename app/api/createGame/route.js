@@ -19,28 +19,28 @@ export async function GET() {
     const gameId = Math.floor(Math.random() * 1000000);
     const userGameId = Math.floor(Math.random() * 100000);
 
-    const game = await prisma.game.create({
-      data: {
+  const game = await prisma.game.create({
+    data: {
         gameId: gameId.toString(),
-        createdAt: new Date(),
-      },
-    });
+      createdAt: new Date(),
+    },
+  });
 
-    const userGame = await prisma.userGame.create({
-      data: {
+  const userGame = await prisma.userGame.create({
+    data: {
         userGameId: userGameId.toString(),
-        gameId: game.id,
+      gameId: game.id,
         userId: sessionData.userId, // Utiliser l'ID de l'utilisateur connecté
         roleId: 1, // Admin par défaut
-        createdAt: new Date(),
-      },
-    });
+      createdAt: new Date(),
+    },
+  });
 
-    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const partyId = Array.from({ length: 10 }, () => caracteres.charAt(Math.floor(Math.random() * caracteres.length))).join('');
+  const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const partyId = Array.from({ length: 10 }, () => caracteres.charAt(Math.floor(Math.random() * caracteres.length))).join('');
     
-    const party = await prisma.party.create({
-      data: {
+  const party = await prisma.party.create({
+    data: {
         partyId: partyId.toString(),
         Game: {
           connect: {
@@ -52,11 +52,11 @@ export async function GET() {
             id: 1
           }
         },
-        createdAt: new Date(),
-      },
-    });
+      createdAt: new Date(),
+    },
+  });
 
-    return NextResponse.json({ gameId: userGameId });
+  return NextResponse.json({ gameId: userGameId });
   } catch (error) {
     console.error('Erreur lors de la création du jeu:', error);
     return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 });

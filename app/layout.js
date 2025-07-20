@@ -28,15 +28,16 @@ export default function RootLayout({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
       </head>
       <body
-        className={`relative flex items-center justify-center min-h-screen w-full overflow-x-hidden ${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`relative h-screen w-full ${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{ overflow: 'hidden' }}
       >
         <AuthProvider>
-          <GlobalProvider>
-            <div className="w-full h-full">
-              {children}
+        <GlobalProvider>
+            <div className="h-full w-full" style={{ overflow: 'hidden' }}>
+          {children}
             </div>
-            <Toaster richColors />
-          </GlobalProvider>
+          <Toaster richColors />
+        </GlobalProvider>
         </AuthProvider>
       </body>
     </html>

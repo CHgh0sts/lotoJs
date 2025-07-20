@@ -87,25 +87,25 @@ export async function POST(request) {
     } 
     // Sinon, création simple pour compatibilité (utilisateurs de jeu temporaires)
     else {
-        if (!nom || !prenom) {
-            return NextResponse.json({ error: 'Nom and prenom are required' }, { status: 400 });
-        }
+    if (!nom || !prenom) {
+        return NextResponse.json({ error: 'Nom and prenom are required' }, { status: 400 });
+    }
         
-        const userId = generateNumber(10);
+    const userId = generateNumber(10);
         const tempEmail = `${nom.toLowerCase()}.${prenom.toLowerCase()}.${userId}@temp.local`;
         const tempPassword = await bcrypt.hash('temppassword123', 10);
         
-        const user = await prisma.user.create({
-            data: { 
-                userId: userId,
-                nom,
-                prenom,
+    const user = await prisma.user.create({
+        data: { 
+            userId: userId,
+            nom,
+            prenom,
                 email: tempEmail,
                 password: tempPassword,
                 username: `${nom.toLowerCase()} ${prenom.toLowerCase()}`,
                 isTemporary: true
-            }
-        });
+        }
+    });
 
         // Retourner l'utilisateur sans le mot de passe
         const { password: _, ...userWithoutPassword } = user;

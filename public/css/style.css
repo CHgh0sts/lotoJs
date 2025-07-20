@@ -10,11 +10,24 @@ html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  height: 100%;
+}
+
+body {
+  overflow-x: hidden;
 }
 
 @media (max-width: 768px) {
   html {
     font-size: 14px;
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile */
+  }
+  
+  body {
+    height: 100vh;
+    height: 100dvh;
+    overflow-x: hidden;
   }
 }
 
@@ -28,11 +41,6 @@ h1 {
     font-family: "Grechen Fuemen", serif;
     font-weight: 400;
     font-style: normal;
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    overflow-x: hidden;
 }
 
 /* Variables CSS pour la cohérence des couleurs */
@@ -202,6 +210,7 @@ body {
     content: '';
     width: 80%;
     height: 80%;
+    pointer-events: none;
     background-color: #ffffff30;
     border-top-left-radius: 2vh;
     border-bottom-right-radius: 2vh;
@@ -351,6 +360,236 @@ body {
     font-size: 10px;
     font-weight: 400;
     opacity: 0.6;
+}
+
+/* Styles pour les tooltips améliorés */
+@media (hover: hover) {
+    [title]:hover::after {
+        /* Supprimé : animation tooltipFadeIn dégueulasse */
+    }
+}
+
+/* Supprimé : keyframes tooltipFadeIn dégueulasse */
+
+/* Styles pour la checkbox personnalisée */
+.custom-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #4b5563;
+    border-radius: 4px;
+    background-color: #1f2937;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.custom-checkbox:checked {
+    background-color: #16a34a;
+    border-color: #16a34a;
+}
+
+.custom-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.custom-checkbox:hover {
+    border-color: #16a34a;
+    background-color: #374151;
+}
+
+.custom-checkbox:focus {
+    outline: none;
+        box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.5);
+}
+
+.Carton-cell input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-weight: 600;
+    font-size: clamp(14px, 2vh, 18px);
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    transition: var(--transition);
+}
+
+.Carton-cell input:focus {
+    background: rgba(var(--primary-green), 0.2);
+    color: #22c55e;
+}
+
+.Carton-cell input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.isSelected::before {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    content: '';
+    width: 85%;
+    height: 85%;
+    background: radial-gradient(circle, var(--primary-green) 0%, var(--primary-green-dark) 100%);
+    border-radius: 50%;
+    /* Supprimé : animation pulse dégueulasse */
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.6);
+}
+
+/* Supprimé : keyframes pulse dégueulasse */
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+    .hidden-mobile {
+        display: none !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .hidden-desktop {
+        display: none !important;
+    }
+}
+
+/* Touch targets pour mobile */
+@media (max-width: 768px) {
+    button, .cursor-pointer {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
+
+/* Alignement des icônes dans les boutons - Mobile */
+@media (max-width: 768px) {
+  /* Boutons avec icônes uniquement */
+  button:has(svg:only-child) {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+  
+  /* Boutons avec icônes et texte */
+  button:has(svg) {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+  }
+  
+  /* Icônes dans les boutons */
+  button svg {
+    flex-shrink: 0 !important;
+    display: block !important;
+  }
+  
+  /* Correction spécifique pour les boutons de header */
+  header button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.75rem !important;
+  }
+  
+  /* Boutons avec flex items-center justify-center */
+  .flex.items-center.justify-center {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  /* Boutons ronds/circulaires */
+  .rounded-full {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  /* Correction pour les boutons d'action dans les dialogues */
+  [class*="bg-green-"], [class*="bg-blue-"], [class*="bg-red-"], [class*="bg-purple-"] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+/* Variables CSS pour les couleurs */
+:root {
+  --primary-green: 34, 197, 94;
+  --primary-green-dark: 22, 163, 74;
+  --primary-blue: 59, 130, 246;
+  --primary-red: 239, 68, 68;
+  --background-dark: 17, 24, 39;
+  --background-darker: 31, 41, 55;
+  --text-primary: 255, 255, 255;
+  --text-secondary: 156, 163, 175;
+  --border-color: 75, 85, 99;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Styles pour la grille du carton */
+.Carton-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: clamp(1px, 0.2vh, 3px);
+  width: 100%;
+  aspect-ratio: 5/3;
+  padding: clamp(2px, 0.4vh, 6px);
+  background: linear-gradient(135deg, 
+    rgba(var(--background-darker), 0.9) 0%, 
+    rgba(var(--background-dark), 0.95) 100%);
+  border: 2px solid rgba(var(--border-color), 0.3);
+  border-radius: clamp(6px, 1vh, 12px);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: var(--transition);
+}
+
+.Carton-grid:hover {
+  border-color: rgba(var(--primary-green), 0.5);
+  box-shadow: 0 8px 32px rgba(var(--primary-green), 0.2);
+  transform: translateY(-2px);
+}
+
+.Carton-cell {
+  position: relative;
+  background: rgba(var(--background-darker), 0.8);
+  border: 1px solid rgba(var(--border-color), 0.4);
+  border-radius: clamp(3px, 0.5vh, 6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  min-height: clamp(28px, 4vh, 45px);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+
+.Carton-cell:hover {
+  background: rgba(var(--primary-blue), 0.1);
+  border-color: rgba(var(--primary-blue), 0.5);
+  transform: scale(1.05);
+}
+
+.Carton-cell.isSelected {
+  background: rgba(var(--primary-green), 0.2);
+  border-color: rgba(var(--primary-green), 0.8);
+  box-shadow: 
+    0 0 15px rgba(var(--primary-green), 0.4),
+    inset 0 0 10px rgba(var(--primary-green), 0.2);
 }
 
 /* Styles pour les tooltips améliorés */
