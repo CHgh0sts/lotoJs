@@ -56,6 +56,8 @@ const ListNumber = ({ gameSession, gameId, party }) => {
                 aspect-square w-12 max-w-12 max-h-12
                 flex items-center justify-center 
                 border-0
+                m-[2px]
+                rounded-md
                 transition-all duration-200 ease-in-out
                 text-white font-medium
                 hover:bg-gray-500 hover:scale-105
