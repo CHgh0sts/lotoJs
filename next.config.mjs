@@ -8,6 +8,9 @@ const nextConfig = {
     // Ignorer les erreurs TypeScript pendant le build si nécessaire
     ignoreBuildErrors: false,
   },
+  output: 'standalone',
+  skipTrailingSlashRedirect: true,
+  trailingSlash: false,
 };
 
 export default nextConfig;
