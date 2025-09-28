@@ -4,7 +4,7 @@ import { useContext, useState, useEffect } from 'react';
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '@/components/ui/context-menu';
 import { Edit, Trash2 } from 'lucide-react';
 
-export default function Carton({ cartonInitial = { listNumber: Array(27).fill('*') }, height = '8vh', mode = 'view', addCartonInit = false, onAddCarton, onDelete, onEdit, onValidationError, onValidationChange, isEditMode = false }) {
+export default function Carton({ cartonInitial = { listNumber: Array(27).fill('*') }, height = 'auto', mode = 'view', addCartonInit = false, onAddCarton, onDelete, onEdit, onValidationError, onValidationChange, isEditMode = false }) {
   const { numbers } = useContext(GlobalContext);
   const [carton, setCarton] = useState(cartonInitial);
   const [tempInputs, setTempInputs] = useState({});
@@ -168,12 +168,20 @@ export default function Carton({ cartonInitial = { listNumber: Array(27).fill('*
     };
   };
 
+  // Fonction pour vider le carton
+  const resetCarton = () => {
+    setCarton({ listNumber: Array(27).fill('*') });
+    setTempInputs({});
+  };
+
   useEffect(() => {
     if (addCartonInit) {
       const validation = validateCarton();
 
       if (validation.isValid) {
         onAddCarton(carton.listNumber);
+        // Vider le carton après un ajout réussi
+        resetCarton();
       } else {
         // Afficher les erreurs de validation
         console.log('Erreurs de validation du carton:', validation.errors);

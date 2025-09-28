@@ -225,7 +225,6 @@ h1 {
     flex-direction: column;
     width: 100%;
     max-width: min(95vw, 500px);
-    min-height: 200px;
     margin: 8px auto;
     background: var(--glass-bg);
     -webkit-backdrop-filter: blur(15px);
@@ -334,15 +333,6 @@ h1 {
     border-color: rgba(34, 197, 94, 0.3) !important;
 }
 
-.selected-cell::after {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1));
-    border-radius: 6px;
-    pointer-events: none;
-}
-
 /* Amélioration des animations */
 .Carton {
     /* Supprimé : animation slideIn dégueulasse */
@@ -439,8 +429,8 @@ h1 {
     top: 50%;
     left: 50%;
     content: '';
-    width: 85%;
-    height: 85%;
+    width: 5vh;
+    height: 5vh;
     background: radial-gradient(circle, var(--primary-green) 0%, var(--primary-green-dark) 100%);
     border-radius: 50%;
     /* Supprimé : animation pulse dégueulasse */
@@ -585,11 +575,7 @@ h1 {
 }
 
 .Carton-cell.isSelected {
-  background: rgba(var(--primary-green), 0.2);
   border-color: rgba(var(--primary-green), 0.8);
-  box-shadow: 
-    0 0 15px rgba(var(--primary-green), 0.4),
-    inset 0 0 10px rgba(var(--primary-green), 0.2);
 }
 
 /* Styles pour les tooltips améliorés */
@@ -669,9 +655,9 @@ h1 {
     top: 50%;
     left: 50%;
     content: '';
-    width: 85%;
-    height: 85%;
-    background: radial-gradient(circle, var(--primary-green) 0%, var(--primary-green-dark) 100%);
+    width: 5vh;
+    height: 5vh;
+    background: radial-gradient(circle, var(--primary-green) 0%, var(--primary-green-dark) 100%) !important;
     border-radius: 50%;
     /* Supprimé : animation pulse dégueulasse */
     box-shadow: 0 0 20px rgba(34, 197, 94, 0.6);

@@ -76,7 +76,7 @@ const ListNumberBeforeWin = ({ typeParty }) => {
               <Info className="w-4 h-4" onMouseEnter={() => setShowInfo(bestCarton)} onMouseLeave={() => setShowInfo(false)} />
               {showInfo && showInfo === bestCarton && (
                 <div className="absolute pointer-events-none bottom-0 w-[35vh]">
-                  <Carton cartonInitial={showInfo} />
+                  <Carton cartonInitial={showInfo} height="2vh" />
                 </div>
               )}
               {user.nom} {user.prenom} : {minMissingNumbers}
